@@ -84,12 +84,21 @@
         debug('Google Analytics loaded');
 
         pageTracker = _gat._getTracker(account_id);
+        if (typeof settings.domainName != 'undefined') {
+          pageTracker._setDomainName(settings.domainName);
+        }
+        
+        
 
         if(settings.status_code == null || settings.status_code == 200) {
           pageTracker._trackPageview();
         } else {
           debug('Tracking error ' + settings.status_code);
-          pageTracker._trackPageview("/" + settings.status_code + ".html?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);
+          pageTracker._trackPageview("/" + settings.status_code + 
+            ".html?page=" + document.location.pathname + document.location.search + 
+            "&from=" + document.referrer +
+            "&error_id=" + (settings.error_id || "unknown")
+          );
         }
         if($.isFunction(settings.callback)){
           settings.callback();
@@ -225,3 +234,6 @@
     debug         : false
   };
 })(jQuery);
+
+// initialize google analytics.
+$.trackPage('UA-xxx-xxx', options);
